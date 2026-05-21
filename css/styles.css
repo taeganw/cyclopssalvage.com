@@ -11,23 +11,25 @@
 
 /* ── CSS Variables ────────────────────────────────────────── */
 :root {
-  --c-black:        #111111;
-  --c-dark:         #1C1C1E;
-  --c-mid:          #2A2A2C;
-  --c-paper:        #F0EBE0;
-  --c-paper-dark:   #E0D9CB;
+  --c-black:        #080E10;
+  --c-dark:         #0D1A1E;
+  --c-mid:          #162228;
+  --c-paper:        #E8F0F2;
+  --c-paper-dark:   #D4E2E6;
   --c-white:        #FFFFFF;
-  --c-off-white:    #E8E4DC;
-  --c-red:          #C8302A;
-  --c-red-dark:     #9E2420;
-  --c-gold:         #C9A843;
-  --c-gold-dark:    #A8892E;
-  --c-blue:         #3A7FBF;
-  --c-blue-light:   #5A9FDF;
-  --c-green:        #4A7C59;
-  --c-text:         #1C1C1E;
-  --c-text-light:   #555550;
-  --c-border:       #C8C0B0;
+  --c-off-white:    #DCE9EC;
+  /* primary — logo teal (darkened for punch) */
+  --c-red:          #276878;
+  --c-red-dark:     #1A4D5C;
+  /* accent — lighter teal highlight */
+  --c-gold:         #4BAFC4;
+  --c-gold-dark:    #2E8FA6;
+  --c-blue:         #1A4D5C;
+  --c-blue-light:   #3A9AB0;
+  --c-green:        #276878;
+  --c-text:         #0D1A1E;
+  --c-text-light:   #3E6070;
+  --c-border:       #A8C8D0;
 
   --font-head:      'Barlow Condensed', sans-serif;
   --font-body:      'Barlow', sans-serif;
@@ -168,7 +170,7 @@ ul { list-style: none; }
   left: 0;
   right: 0;
   z-index: 100;
-  background: rgba(17,17,17,0.96);
+  background: rgba(8,14,16,0.96);
   border-bottom: 2px solid var(--c-red);
   backdrop-filter: blur(6px);
   transition: background 0.3s;
@@ -185,27 +187,18 @@ ul { list-style: none; }
 .nav__logo {
   display: flex;
   align-items: center;
-  gap: 0.6rem;
 }
-.nav__logo-img {
-  width: 40px;
-  height: 40px;
-  object-fit: cover;
-  border-radius: 50%;
-  border: 2px solid var(--c-gold);
-  filter: grayscale(20%);
+/* wordmark logo in nav — invert white PNG to teal */
+.nav__logo-img--wordmark {
+  height: 36px;
+  width: auto;
+  object-fit: contain;
+  /* invert white → black, then shift hue to teal */
+  filter: invert(1) sepia(1) saturate(3) hue-rotate(155deg) brightness(0.9);
+  transition: filter 0.2s;
 }
-.nav__logo-text {
-  font-family: var(--font-head);
-  font-weight: 900;
-  font-size: 1rem;
-  line-height: 1.1;
-  letter-spacing: 0.08em;
-  text-transform: uppercase;
-  color: var(--c-off-white);
-}
-.nav__logo-text span {
-  color: var(--c-gold);
+.nav__logo:hover .nav__logo-img--wordmark {
+  filter: invert(1) sepia(1) saturate(4) hue-rotate(155deg) brightness(1.1);
 }
 .nav__links {
   display: flex;
@@ -365,33 +358,22 @@ ul { list-style: none; }
   transform: rotate(-0.5deg);
 }
 .hero__title {
-  display: flex;
-  flex-direction: column;
-  line-height: 0.88;
   margin-bottom: 1.5rem;
+  display: flex;
+  justify-content: center;
 }
-.hero__title-line1 {
-  font-family: var(--font-head);
-  font-weight: 900;
-  font-size: clamp(5rem, 14vw, 11rem);
-  text-transform: uppercase;
-  letter-spacing: -0.01em;
-  color: var(--c-off-white);
-  /* distressed effect: partial stroke */
-  -webkit-text-stroke: 1px rgba(255,255,255,0.3);
-  text-shadow:
-    4px 4px 0 var(--c-red),
-    8px 8px 0 rgba(200,48,42,0.3);
+/* hero wordmark logo — large, teal-tinted */
+.hero__logo {
+  width: clamp(280px, 55vw, 620px);
+  height: auto;
+  /* white PNG → teal matching the logo brand color */
+  filter: invert(1) sepia(1) saturate(3) hue-rotate(155deg) brightness(1.05)
+          drop-shadow(4px 4px 0px rgba(39,104,120,0.6));
+  animation: logoFadeIn 0.8s ease both;
 }
-.hero__title-line2 {
-  font-family: var(--font-head);
-  font-weight: 900;
-  font-size: clamp(3.5rem, 9vw, 7rem);
-  text-transform: uppercase;
-  letter-spacing: 0.25em;
-  color: var(--c-gold);
-  -webkit-text-stroke: 1px rgba(201,168,67,0.4);
-  text-shadow: 3px 3px 0 rgba(168,137,46,0.5);
+@keyframes logoFadeIn {
+  from { opacity: 0; transform: translateY(16px) scale(0.97); }
+  to   { opacity: 1; transform: translateY(0)   scale(1); }
 }
 .hero__sub {
   font-size: clamp(0.95rem, 2vw, 1.1rem);
@@ -788,28 +770,15 @@ ul { list-style: none; }
 }
 .footer__brand {
   display: flex;
-  align-items: center;
-  gap: 0.75rem;
-}
-.footer__logo {
-  width: 50px;
-  height: 50px;
-  border-radius: 50%;
-  object-fit: cover;
-  border: 2px solid var(--c-gold);
-  filter: grayscale(20%);
-}
-.footer__brand-text {
-  display: flex;
   flex-direction: column;
+  align-items: center;
+  gap: 0.5rem;
 }
-.footer__name {
-  font-family: var(--font-head);
-  font-weight: 900;
-  font-size: 1.1rem;
-  letter-spacing: 0.12em;
-  text-transform: uppercase;
-  color: var(--c-off-white);
+.footer__logo--wordmark {
+  height: 48px;
+  width: auto;
+  filter: invert(1) sepia(1) saturate(2.5) hue-rotate(155deg) brightness(0.85);
+  opacity: 0.9;
 }
 .footer__tagline {
   font-family: var(--font-mono);
@@ -817,7 +786,7 @@ ul { list-style: none; }
   letter-spacing: 0.15em;
   text-transform: uppercase;
   color: var(--c-gold);
-  opacity: 0.8;
+  opacity: 0.7;
 }
 .footer__nav {
   display: flex;
