@@ -189,16 +189,16 @@ ul { list-style: none; }
 }
 /* mascot face in nav */
 .nav__logo-img--face {
-  width: 38px;
-  height: 38px;
+  width: 46px;
+  height: 46px;
   object-fit: cover;
   border-radius: 50%;
   border: 2px solid var(--c-gold);
   flex-shrink: 0;
 }
-/* wordmark logo in nav — invert white PNG to teal */
+/* wordmark logo in nav */
 .nav__logo-img--wordmark {
-  height: 32px;
+  height: 42px;
   width: auto;
   object-fit: contain;
   filter: invert(1) sepia(1) saturate(3) hue-rotate(155deg) brightness(0.9);
@@ -369,13 +369,13 @@ ul { list-style: none; }
   display: flex;
   justify-content: center;
 }
-/* hero wordmark logo — large, teal-tinted */
+/* hero lowrider art — white bg blends away on dark hero */
 .hero__logo {
-  width: clamp(280px, 55vw, 620px);
+  width: clamp(300px, 65vw, 720px);
   height: auto;
-  /* white PNG → teal matching the logo brand color */
-  filter: invert(1) sepia(1) saturate(3) hue-rotate(155deg) brightness(1.05)
-          drop-shadow(4px 4px 0px rgba(39,104,120,0.6));
+  mix-blend-mode: screen;
+  filter: contrast(1.05) saturate(1.05)
+          drop-shadow(0 8px 40px rgba(0,0,0,0.8));
   animation: logoFadeIn 0.8s ease both;
 }
 @keyframes logoFadeIn {
@@ -825,15 +825,15 @@ ul { list-style: none; }
   background: var(--c-dark);
   overflow: hidden;
 }
-/* octopus art — large, faded, centered behind cards */
+/* skeleton art — faded behind contact cards */
 .contact__bg-art {
   position: absolute;
   inset: 0;
-  background-image: url('../images/art-octopus.webp');
+  background-image: url('../images/art-skeleton.webp');
   background-size: cover;
-  background-position: center;
-  opacity: 0.08;
-  filter: grayscale(30%) contrast(1.1);
+  background-position: center top;
+  opacity: 0.07;
+  filter: grayscale(20%) contrast(1.1);
   pointer-events: none;
   z-index: 0;
 }
