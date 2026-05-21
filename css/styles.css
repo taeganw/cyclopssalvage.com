@@ -365,21 +365,32 @@ ul { list-style: none; }
   transform: rotate(-0.5deg);
 }
 .hero__title {
-  margin-bottom: 1.5rem;
   display: flex;
-  justify-content: center;
+  flex-direction: column;
+  line-height: 0.88;
+  margin-bottom: 1.5rem;
 }
-/* hero teal wordmark logo */
-.hero__logo {
-  width: clamp(280px, 55vw, 620px);
-  height: auto;
-  filter: invert(1) sepia(1) saturate(3) hue-rotate(155deg) brightness(1.05)
-          drop-shadow(4px 4px 0px rgba(39,104,120,0.6));
-  animation: logoFadeIn 0.8s ease both;
+.hero__title-line1 {
+  font-family: var(--font-head);
+  font-weight: 900;
+  font-size: clamp(5rem, 14vw, 11rem);
+  text-transform: uppercase;
+  letter-spacing: -0.01em;
+  color: var(--c-off-white);
+  -webkit-text-stroke: 1px rgba(255,255,255,0.3);
+  text-shadow:
+    4px 4px 0 var(--c-red),
+    8px 8px 0 rgba(200,48,42,0.3);
 }
-@keyframes logoFadeIn {
-  from { opacity: 0; transform: translateY(16px) scale(0.97); }
-  to   { opacity: 1; transform: translateY(0)   scale(1); }
+.hero__title-line2 {
+  font-family: var(--font-head);
+  font-weight: 900;
+  font-size: clamp(3.5rem, 9vw, 7rem);
+  text-transform: uppercase;
+  letter-spacing: 0.25em;
+  color: var(--c-gold);
+  -webkit-text-stroke: 1px rgba(201,168,67,0.4);
+  text-shadow: 3px 3px 0 rgba(168,137,46,0.5);
 }
 .hero__sub {
   font-size: clamp(0.95rem, 2vw, 1.1rem);
