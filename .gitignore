@@ -1,0 +1,14 @@
+# raw originals — keep compressed web images, ignore unoptimised PNGs
+images/*.PNG
+!images/cyclosSalvage-logo.png
+
+# never ignore the live listings data
+!listings.json
+
+# OS
+.DS_Store
+Thumbs.db
+
+# editor
+.vscode/
+*.swp

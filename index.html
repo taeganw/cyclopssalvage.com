@@ -1,0 +1,206 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Cyclops Salvage — Find It. Own It.</title>
+  <meta name="description" content="Cyclops Salvage — premium salvage finds, Dixon Flannels, BMW parts, memorabilia, and more. Shop the eye that never misses." />
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@400;700;900&family=Barlow:wght@400;500;600&family=Share+Tech+Mono&display=swap" />
+  <link rel="stylesheet" href="css/styles.css" />
+</head>
+<body>
+
+  <!-- ===================== NAV ===================== -->
+  <nav class="nav" id="nav">
+    <div class="nav__inner">
+      <a href="#hero" class="nav__logo">
+        <img src="images/cyclopsfaceGREY.jpg" alt="Cyclops Salvage" class="nav__logo-img" />
+        <span class="nav__logo-text">CYCLOPS<br><span>SALVAGE</span></span>
+      </a>
+      <button class="nav__toggle" id="navToggle" aria-label="Menu">
+        <span></span><span></span><span></span>
+      </button>
+      <ul class="nav__links" id="navLinks">
+        <li><a href="#shop" class="nav__link">Shop</a></li>
+        <li><a href="#about" class="nav__link">About</a></li>
+        <li><a href="#contact" class="nav__link">Contact</a></li>
+        <li><a href="https://www.ebay.com/str/cyclopssalvage" target="_blank" rel="noopener" class="nav__cta">eBay Store</a></li>
+      </ul>
+    </div>
+  </nav>
+
+  <!-- ===================== HERO ===================== -->
+  <section class="hero" id="hero">
+    <div class="hero__texture"></div>
+    <div class="hero__mascot-bg">
+      <!-- repeating watermark mascots via CSS -->
+    </div>
+    <div class="hero__inner">
+      <div class="hero__stamp">EST. ONLINE</div>
+      <h1 class="hero__title">
+        <span class="hero__title-line1">CYCLOPS</span>
+        <span class="hero__title-line2">SALVAGE</span>
+      </h1>
+      <p class="hero__sub">One eye. No misses. Premium salvage finds, Dixon Flannels,<br>BMW parts &amp; more — direct from the source.</p>
+      <div class="hero__actions">
+        <a href="#shop" class="btn btn--primary">Browse the Goods</a>
+        <a href="https://www.ebay.com/str/cyclopssalvage" target="_blank" rel="noopener" class="btn btn--ghost">Shop on eBay</a>
+      </div>
+    </div>
+    <div class="hero__scroll-hint">
+      <span>SCROLL</span>
+      <div class="hero__scroll-line"></div>
+    </div>
+  </section>
+
+  <!-- ===================== CATEGORIES / SHOP ===================== -->
+  <section class="shop" id="shop">
+    <div class="section-texture"></div>
+    <div class="container">
+      <div class="section-header reveal">
+        <div class="stamp-label">What We Carry</div>
+        <h2 class="section-title">THE INVENTORY</h2>
+        <p class="section-sub">Hand-picked. Zero filler. Live listings pulled straight from the store — updated every hour.</p>
+      </div>
+
+      <div class="listings-toolbar reveal">
+        <div class="listings-meta">
+          <span id="listingsCount"></span>
+          <span id="listingsUpdated"></span>
+        </div>
+        <div class="filter-bar" id="listingsFilter"></div>
+        <a href="https://www.ebay.com/str/cyclopssalvage" target="_blank" rel="noopener" class="btn btn--ghost listings-ebay-btn">Full eBay Store →</a>
+      </div>
+
+      <div class="listings-grid" id="listingsGrid">
+        <!-- populated by main.js from listings.json -->
+      </div>
+    </div>
+  </section>
+
+  <!-- ===================== ABOUT ===================== -->
+  <section class="about" id="about">
+    <div class="section-texture section-texture--dark"></div>
+    <div class="container">
+      <div class="about__grid">
+        <div class="about__visual reveal">
+          <div class="about__mascot-wrap">
+            <img src="images/cyclopsfaceGREY.jpg" alt="Cyclops Salvage mascot" class="about__mascot" />
+            <div class="about__mascot-badge">ONE EYE.<br>ALL SEEING.</div>
+          </div>
+        </div>
+        <div class="about__content reveal">
+          <div class="stamp-label">The Story</div>
+          <h2 class="section-title">WHO IS<br>CYCLOPS SALVAGE?</h2>
+          <p>We are the eye that never misses. While everyone else scrolls past, we spot the value — in a flannel, a BMW part, a signed piece of history, or a pair of kicks someone else slept on.</p>
+          <p>Cyclops Salvage is an online store built on one principle: <strong>everything we list is worth owning.</strong> No filler. No junk. Just hand-picked inventory across clothing, automotive, collectibles, and beyond.</p>
+          <p>Every item ships fast. Every listing is honest. That's the deal.</p>
+          <div class="about__stats">
+            <div class="about__stat">
+              <span class="about__stat-num" data-count="100">0</span><span class="about__stat-suffix">%</span>
+              <span class="about__stat-label">Positive Feedback</span>
+            </div>
+            <div class="about__stat">
+              <span class="about__stat-num" data-count="7">0</span><span class="about__stat-suffix">+</span>
+              <span class="about__stat-label">Categories</span>
+            </div>
+            <div class="about__stat">
+              <span class="about__stat-num" data-count="1">0</span><span class="about__stat-suffix"></span>
+              <span class="about__stat-label">Eye. Zero Misses.</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===================== DIVIDER BANNER ===================== -->
+  <div class="ticker-banner">
+    <div class="ticker-track">
+      <span>CYCLOPS SALVAGE</span>
+      <span class="ticker-eye">👁</span>
+      <span>DIXON FLANNELS</span>
+      <span class="ticker-eye">👁</span>
+      <span>BMW PARTS</span>
+      <span class="ticker-eye">👁</span>
+      <span>MEMORABILIA</span>
+      <span class="ticker-eye">👁</span>
+      <span>SPORTING GOODS</span>
+      <span class="ticker-eye">👁</span>
+      <span>CYCLOPS SALVAGE</span>
+      <span class="ticker-eye">👁</span>
+      <span>DIXON FLANNELS</span>
+      <span class="ticker-eye">👁</span>
+      <span>BMW PARTS</span>
+      <span class="ticker-eye">👁</span>
+      <span>MEMORABILIA</span>
+      <span class="ticker-eye">👁</span>
+      <span>SPORTING GOODS</span>
+      <span class="ticker-eye">👁</span>
+    </div>
+  </div>
+
+  <!-- ===================== CONTACT ===================== -->
+  <section class="contact" id="contact">
+    <div class="section-texture"></div>
+    <div class="container">
+      <div class="section-header reveal">
+        <div class="stamp-label">Get In Touch</div>
+        <h2 class="section-title">FIND US</h2>
+        <p class="section-sub">All transactions and questions handled through eBay — the safest way to buy and the fastest way to get answers.</p>
+      </div>
+      <div class="contact__grid reveal">
+        <a href="https://www.ebay.com/str/cyclopssalvage" target="_blank" rel="noopener" class="contact-card contact-card--primary">
+          <div class="contact-card__texture"></div>
+          <div class="contact-card__icon">🛒</div>
+          <h3>Shop the Store</h3>
+          <p>Browse all active listings, categories, and deals directly on eBay.</p>
+          <span class="btn btn--primary">Visit eBay Store</span>
+        </a>
+        <a href="https://www.ebay.com/usr/cyclopssalvage" target="_blank" rel="noopener" class="contact-card">
+          <div class="contact-card__texture"></div>
+          <div class="contact-card__icon">✉️</div>
+          <h3>Message Us</h3>
+          <p>Questions about an item? Use eBay's messaging system for a fast response.</p>
+          <span class="btn btn--ghost">Contact on eBay</span>
+        </a>
+        <a href="https://www.ebay.com/str/cyclopssalvage" target="_blank" rel="noopener" class="contact-card">
+          <div class="contact-card__texture"></div>
+          <div class="contact-card__icon">🔄</div>
+          <h3>Returns & Policies</h3>
+          <p>All return and shipping policies are listed on each eBay item. Buyer protection included.</p>
+          <span class="btn btn--ghost">View Policies</span>
+        </a>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===================== FOOTER ===================== -->
+  <footer class="footer">
+    <div class="footer__texture"></div>
+    <div class="container">
+      <div class="footer__inner">
+        <div class="footer__brand">
+          <img src="images/cyclopsfaceGREY.jpg" alt="Cyclops Salvage" class="footer__logo" />
+          <div class="footer__brand-text">
+            <span class="footer__name">CYCLOPS SALVAGE</span>
+            <span class="footer__tagline">One Eye. No Misses.</span>
+          </div>
+        </div>
+        <nav class="footer__nav">
+          <a href="#shop">Shop</a>
+          <a href="#about">About</a>
+          <a href="#contact">Contact</a>
+          <a href="https://www.ebay.com/str/cyclopssalvage" target="_blank" rel="noopener">eBay Store</a>
+        </nav>
+        <div class="footer__copy">
+          <span>© 2026 Cyclops Salvage. All rights reserved.</span>
+          <span>cyclopsalvage.com</span>
+        </div>
+      </div>
+    </div>
+  </footer>
+
+  <script src="js/main.js"></script>
+</body>
+</html>
