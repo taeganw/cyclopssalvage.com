@@ -428,7 +428,29 @@ ul { list-style: none; }
   position: relative;
   padding: var(--section-pad);
   background: var(--c-paper);
+  overflow: hidden;
 }
+/* skeleton art — fixed to right edge, partially visible */
+.shop__bg-art {
+  position: absolute;
+  top: 0;
+  right: -60px;
+  height: 100%;
+  width: 340px;
+  pointer-events: none;
+  z-index: 0;
+  display: flex;
+  align-items: center;
+}
+.shop__bg-img {
+  height: 90%;
+  width: auto;
+  object-fit: contain;
+  opacity: 0.07;
+  filter: grayscale(40%) contrast(1.2);
+}
+/* ensure shop content sits above background art */
+.shop .container { position: relative; z-index: 1; }
 .categories {
   display: grid;
   grid-template-columns: repeat(4, 1fr);
@@ -663,10 +685,95 @@ ul { list-style: none; }
   margin-top: 0.2rem;
 }
 
+/* outline mascot ghost watermark behind about content */
+.about__bg-outline {
+  position: absolute;
+  top: 50%;
+  right: 2%;
+  transform: translateY(-50%);
+  width: 420px;
+  height: 420px;
+  background-image: url('../images/mascot-outline.webp');
+  background-size: contain;
+  background-repeat: no-repeat;
+  background-position: center;
+  opacity: 0.04;
+  pointer-events: none;
+  z-index: 0;
+}
+.about .container { position: relative; z-index: 1; }
+
+/* lowrider art card below mascot */
+.about__art-card {
+  margin-top: 1.5rem;
+  border-radius: var(--radius);
+  overflow: hidden;
+  border: 1px solid rgba(255,255,255,0.08);
+  box-shadow: 4px 4px 0 var(--c-black);
+}
+.about__art-img {
+  width: 100%;
+  height: auto;
+  display: block;
+  filter: contrast(1.05) saturate(0.95);
+  transition: transform 0.4s, filter 0.4s;
+}
+.about__art-card:hover .about__art-img {
+  transform: scale(1.03);
+  filter: contrast(1.1) saturate(1.1);
+}
+
 @media (max-width: 768px) {
   .about__grid { grid-template-columns: 1fr; gap: 2.5rem; }
-  .about__visual { display: flex; justify-content: center; }
+  .about__visual { display: flex; flex-direction: column; align-items: center; }
   .about__mascot { width: 200px; height: 200px; }
+  .about__bg-outline { width: 260px; height: 260px; opacity: 0.03; }
+}
+
+/* ── ART STRIP ───────────────────────────────────────────── */
+.art-strip {
+  position: relative;
+  height: 340px;
+  overflow: hidden;
+}
+.art-strip__img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: center 30%;
+  filter: brightness(0.55) contrast(1.1);
+  display: block;
+}
+.art-strip__overlay {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 1rem;
+  background: linear-gradient(
+    to bottom,
+    rgba(17,17,17,0.3) 0%,
+    rgba(17,17,17,0.1) 40%,
+    rgba(17,17,17,0.5) 100%
+  );
+}
+.art-strip__logo {
+  height: 80px;
+  width: auto;
+  /* invert dark logo to white for visibility */
+  filter: invert(1) brightness(1.1);
+  opacity: 0.9;
+}
+.art-strip__text {
+  font-family: var(--font-head);
+  font-weight: 700;
+  font-size: 1.1rem;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: var(--c-off-white);
+  opacity: 0.85;
 }
 
 /* ── TICKER BANNER ───────────────────────────────────────── */
@@ -702,8 +809,26 @@ ul { list-style: none; }
 .contact {
   position: relative;
   padding: var(--section-pad);
-  background: var(--c-paper-dark);
+  background: var(--c-dark);
+  overflow: hidden;
 }
+/* octopus art — large, faded, centered behind cards */
+.contact__bg-art {
+  position: absolute;
+  inset: 0;
+  background-image: url('../images/art-octopus.webp');
+  background-size: cover;
+  background-position: center;
+  opacity: 0.08;
+  filter: grayscale(30%) contrast(1.1);
+  pointer-events: none;
+  z-index: 0;
+}
+.contact .container { position: relative; z-index: 1; }
+/* section header text needs to be light on dark bg */
+.contact .section-title { color: var(--c-off-white); }
+.contact .section-sub   { color: rgba(232,228,220,0.6); }
+.contact .stamp-label   { color: var(--c-gold); border-color: var(--c-gold); }
 .contact__grid {
   display: grid;
   grid-template-columns: repeat(3, 1fr);
