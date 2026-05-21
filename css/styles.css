@@ -369,13 +369,12 @@ ul { list-style: none; }
   display: flex;
   justify-content: center;
 }
-/* hero lowrider art — white bg blends away on dark hero */
+/* hero teal wordmark logo */
 .hero__logo {
-  width: clamp(300px, 65vw, 720px);
+  width: clamp(280px, 55vw, 620px);
   height: auto;
-  mix-blend-mode: screen;
-  filter: contrast(1.05) saturate(1.05)
-          drop-shadow(0 8px 40px rgba(0,0,0,0.8));
+  filter: invert(1) sepia(1) saturate(3) hue-rotate(155deg) brightness(1.05)
+          drop-shadow(4px 4px 0px rgba(39,104,120,0.6));
   animation: logoFadeIn 0.8s ease both;
 }
 @keyframes logoFadeIn {
@@ -711,22 +710,23 @@ ul { list-style: none; }
 }
 .about .container { position: relative; z-index: 1; }
 
-/* lowrider art — floats below mascot, no box */
+/* lowrider art — main visual in about column */
 .about__art-card {
-  margin-top: 2rem;
-  padding: 0 1rem;
+  display: flex;
+  justify-content: center;
+  align-items: center;
 }
 .about__art-img {
   width: 100%;
+  max-width: 420px;
   height: auto;
   display: block;
-  /* blend white bg away on dark section */
   mix-blend-mode: screen;
-  filter: contrast(1.05) saturate(1.0) drop-shadow(0 8px 32px rgba(0,0,0,0.7));
+  filter: contrast(1.05) saturate(1.05) drop-shadow(0 8px 40px rgba(0,0,0,0.8));
   transition: transform 0.4s;
 }
 .about__art-card:hover .about__art-img {
-  transform: scale(1.03);
+  transform: scale(1.04);
 }
 
 @media (max-width: 768px) {
@@ -822,23 +822,8 @@ ul { list-style: none; }
 .contact {
   position: relative;
   padding: var(--section-pad);
-  background: var(--c-dark);
-  overflow: hidden;
+  background: #2A2A2C;
 }
-/* skeleton art — faded behind contact cards */
-.contact__bg-art {
-  position: absolute;
-  inset: 0;
-  background-image: url('../images/art-skeleton.webp');
-  background-size: cover;
-  background-position: center top;
-  opacity: 0.07;
-  filter: grayscale(20%) contrast(1.1);
-  pointer-events: none;
-  z-index: 0;
-}
-.contact .container { position: relative; z-index: 1; }
-/* section header text needs to be light on dark bg */
 .contact .section-title { color: var(--c-off-white); }
 .contact .section-sub   { color: rgba(232,228,220,0.6); }
 .contact .stamp-label   { color: var(--c-gold); border-color: var(--c-gold); }
