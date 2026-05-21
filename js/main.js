@@ -115,7 +115,7 @@ document.querySelectorAll('.category-card').forEach(attachTilt);
 
 /* ── eBay Listings ───────────────────────────────────────── */
 
-const FALLBACK_IMG = 'images/cyclopsfaceGREY.jpg';
+const FALLBACK_IMG = 'images/mascot-color.webp';
 
 // Map raw eBay category names → our display labels + filter keys
 const CATEGORY_MAP = {

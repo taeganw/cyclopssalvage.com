@@ -1,6 +1,8 @@
-# raw originals — keep compressed web images, ignore unoptimised PNGs
+# all images are now WebP — ignore any raw PNGs dropped in
+images/*.png
 images/*.PNG
-!images/cyclosSalvage-logo.png
+images/*.jpg
+images/*.jpeg
 
 # never ignore the live listings data
 !listings.json
