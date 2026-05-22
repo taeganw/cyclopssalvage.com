@@ -15,9 +15,9 @@ import time
 import requests
 from datetime import datetime, timezone
 
-EBAY_STORE_URL = "https://www.ebay.com/str/cyclopssalvage"
+EBAY_SELLER    = "cyclopssalvage"
 LISTINGS_FILE  = "listings.json"
-ACTOR_ID       = "delicious_zebu~ebay-store-scraper"
+ACTOR_ID       = "automation-lab~ebay-scraper"
 APIFY_BASE     = "https://api.apify.com/v2"
 
 
@@ -27,7 +27,12 @@ def run_actor(api_token: str) -> str:
     resp = requests.post(
         url,
         params={"token": api_token},
-        json={"storeUrl": EBAY_STORE_URL},
+        json={
+            "searchUrls": [
+                {"url": f"https://www.ebay.com/sch/i.html?_ssn={EBAY_SELLER}&_ipg=200"}
+            ],
+            "maxItems": 500,
+        },
         timeout=30,
     )
     resp.raise_for_status()
@@ -62,20 +67,33 @@ def fetch_dataset(run_id: str, api_token: str) -> list[dict]:
 
 
 def normalise(item: dict) -> dict:
-    """Map Apify output fields to the shape the front end expects."""
-    price_raw = item.get("price") or item.get("currentPrice") or ""
+    """Map automation-lab/ebay-scraper output fields to the shape the front end expects."""
+    price_raw = item.get("price", {})
+    if isinstance(price_raw, dict):
+        price_val = price_raw.get("value", "0.00")
+        currency  = price_raw.get("currency", "USD")
+    else:
+        price_val = str(price_raw).lstrip("$").replace(",", "")
+        currency  = "USD"
+
+    buying_options = []
+    if item.get("buyingFormat", "").upper() == "AUCTION":
+        buying_options = ["AUCTION"]
+    elif item.get("buyingFormat"):
+        buying_options = ["FIXED_PRICE"]
+
     return {
-        "id":             item.get("itemId", ""),
+        "id":             str(item.get("itemId", "")),
         "title":          item.get("title", ""),
-        "price":          str(price_raw).lstrip("$").replace(",", ""),
-        "currency":       item.get("currency", "USD"),
+        "price":          str(price_val),
+        "currency":       currency,
         "condition":      item.get("condition", ""),
-        "image":          item.get("image", item.get("imageUrl", "")),
-        "url":            item.get("url", item.get("itemUrl", "")),
+        "image":          item.get("thumbnail", item.get("image", "")),
+        "url":            item.get("url", ""),
         "category":       item.get("category", ""),
         "category_id":    item.get("categoryId", ""),
-        "buying_options": item.get("buyingOptions", []),
-        "seller":         item.get("seller", "cyclopssalvage"),
+        "buying_options": buying_options,
+        "seller":         item.get("seller", {}).get("username", EBAY_SELLER) if isinstance(item.get("seller"), dict) else EBAY_SELLER,
     }
 
 
