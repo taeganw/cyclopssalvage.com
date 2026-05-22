@@ -1,127 +1,104 @@
 #!/usr/bin/env python3
 """
 Fetches all active listings for the cyclopssalvage eBay store
-using the eBay Browse API and writes them to listings.json.
+via the Apify delicious_zebu/ebay-store-scraper Actor and writes
+them to listings.json.
 
-Required GitHub Secrets:
-  EBAY_CLIENT_ID     — eBay developer App ID (Client ID)
-  EBAY_CLIENT_SECRET — eBay developer Cert ID (Client Secret)
+Required GitHub Secret:
+  APIFY_API_TOKEN — Apify personal API token (Settings > Integrations)
 """
 
 import json
 import os
 import sys
+import time
 import requests
 from datetime import datetime, timezone
 
-EBAY_SELLER   = "cyclopssalvage"
-LISTINGS_FILE = "listings.json"
-
-# eBay OAuth token endpoint (production)
-TOKEN_URL = "https://api.ebay.com/identity/v1/oauth2/token"
-
-# eBay Browse API search endpoint
-SEARCH_URL = "https://api.ebay.com/buy/browse/v1/item_summary/search"
-
-# How many items to fetch per page (max 200)
-PAGE_SIZE = 200
+EBAY_STORE_URL = "https://www.ebay.com/str/cyclopssalvage"
+LISTINGS_FILE  = "listings.json"
+ACTOR_ID       = "delicious_zebu~ebay-store-scraper"
+APIFY_BASE     = "https://api.apify.com/v2"
 
 
-def get_access_token(client_id: str, client_secret: str) -> str:
-    """Exchange client credentials for an OAuth application token."""
-    response = requests.post(
-        TOKEN_URL,
-        data={
-            "grant_type":  "client_credentials",
-            "scope":       "https://api.ebay.com/oauth/api_scope",
-        },
-        auth=(client_id, client_secret),
+def run_actor(api_token: str) -> str:
+    """Start the actor run and return the run ID."""
+    url = f"{APIFY_BASE}/acts/{ACTOR_ID}/runs"
+    resp = requests.post(
+        url,
+        params={"token": api_token},
+        json={"storeUrl": EBAY_STORE_URL},
         timeout=30,
     )
-    response.raise_for_status()
-    return response.json()["access_token"]
+    resp.raise_for_status()
+    return resp.json()["data"]["id"]
 
 
-def fetch_all_listings(token: str) -> list[dict]:
-    """
-    Pages through all active listings for the seller.
-    Returns a flat list of normalised listing dicts.
-    """
-    headers = {
-        "Authorization":          f"Bearer {token}",
-        "X-EBAY-C-MARKETPLACE-ID": "EBAY_US",
-        "Content-Type":           "application/json",
-    }
-
-    params = {
-        "q":           "",
-        "filter":      f"sellers:{{{EBAY_SELLER}}}",
-        "limit":       PAGE_SIZE,
-        "offset":      0,
-        "fieldgroups": "EXTENDED",
-    }
-
-    all_items = []
-
+def wait_for_run(run_id: str, api_token: str, poll_interval: int = 10) -> None:
+    """Poll until the run reaches a terminal status."""
+    url = f"{APIFY_BASE}/actor-runs/{run_id}"
     while True:
-        response = requests.get(SEARCH_URL, headers=headers, params=params, timeout=30)
-        response.raise_for_status()
-        data = response.json()
+        resp = requests.get(url, params={"token": api_token}, timeout=30)
+        resp.raise_for_status()
+        status = resp.json()["data"]["status"]
+        if status == "SUCCEEDED":
+            return
+        if status in ("FAILED", "TIMED-OUT", "ABORTED"):
+            sys.exit(f"ERROR: Apify run {run_id} ended with status {status}.")
+        print(f"  run status: {status} — waiting {poll_interval}s…")
+        time.sleep(poll_interval)
 
-        items = data.get("itemSummaries", [])
-        if not items:
-            break
 
-        for item in items:
-            # Normalise to a flat, predictable shape for the front end
-            price_obj  = item.get("price", {})
-            image_obj  = item.get("image", {})
-            categories = item.get("categories", [{}])
+def fetch_dataset(run_id: str, api_token: str) -> list[dict]:
+    """Download all items from the run's default dataset."""
+    url = f"{APIFY_BASE}/actor-runs/{run_id}/dataset/items"
+    resp = requests.get(
+        url,
+        params={"token": api_token, "format": "json", "clean": "true"},
+        timeout=60,
+    )
+    resp.raise_for_status()
+    return resp.json()
 
-            all_items.append({
-                "id":           item.get("itemId", ""),
-                "title":        item.get("title", ""),
-                "price":        price_obj.get("value", "0.00"),
-                "currency":     price_obj.get("currency", "USD"),
-                "condition":    item.get("condition", ""),
-                "image":        image_obj.get("imageUrl", ""),
-                "url":          item.get("itemWebUrl", ""),
-                "category":     categories[0].get("categoryName", "") if categories else "",
-                "category_id":  categories[0].get("categoryId", "")   if categories else "",
-                "buying_options": item.get("buyingOptions", []),
-                "seller":       item.get("seller", {}).get("username", EBAY_SELLER),
-            })
 
-        total     = data.get("total", 0)
-        new_offset = params["offset"] + PAGE_SIZE
-
-        print(f"  fetched {min(new_offset, total)}/{total} listings…")
-
-        if new_offset >= total:
-            break
-
-        params["offset"] = new_offset
-
-    return all_items
+def normalise(item: dict) -> dict:
+    """Map Apify output fields to the shape the front end expects."""
+    price_raw = item.get("price") or item.get("currentPrice") or ""
+    return {
+        "id":             item.get("itemId", ""),
+        "title":          item.get("title", ""),
+        "price":          str(price_raw).lstrip("$").replace(",", ""),
+        "currency":       item.get("currency", "USD"),
+        "condition":      item.get("condition", ""),
+        "image":          item.get("image", item.get("imageUrl", "")),
+        "url":            item.get("url", item.get("itemUrl", "")),
+        "category":       item.get("category", ""),
+        "category_id":    item.get("categoryId", ""),
+        "buying_options": item.get("buyingOptions", []),
+        "seller":         item.get("seller", "cyclopssalvage"),
+    }
 
 
 def main() -> None:
-    client_id     = os.environ.get("EBAY_CLIENT_ID")
-    client_secret = os.environ.get("EBAY_CLIENT_SECRET")
-
-    if not client_id or not client_secret:
-        print("ERROR: EBAY_CLIENT_ID and EBAY_CLIENT_SECRET must be set.")
+    api_token = os.environ.get("APIFY_API_TOKEN")
+    if not api_token:
+        print("ERROR: APIFY_API_TOKEN must be set.")
         sys.exit(1)
 
-    print("Fetching eBay OAuth token…")
-    token = get_access_token(client_id, client_secret)
+    print("Starting Apify eBay store scraper…")
+    run_id = run_actor(api_token)
+    print(f"  run ID: {run_id}")
 
-    print("Fetching listings…")
-    listings = fetch_all_listings(token)
+    print("Waiting for run to complete…")
+    wait_for_run(run_id, api_token)
+
+    print("Downloading results…")
+    raw_items = fetch_dataset(run_id, api_token)
+    listings  = [normalise(i) for i in raw_items]
 
     output = {
         "updated_at": datetime.now(timezone.utc).isoformat(),
-        "seller":     EBAY_SELLER,
+        "seller":     "cyclopssalvage",
         "total":      len(listings),
         "listings":   listings,
     }

@@ -2,8 +2,8 @@ name: Fetch eBay Listings
 
 on:
   schedule:
-    # runs every hour at :00
-    - cron: '0 * * * *'
+    # runs every 6 hours — keeps well within Apify's free $5/month credit
+    - cron: '0 */6 * * *'
   workflow_dispatch:
     # allows manual trigger from GitHub Actions tab
 
@@ -28,8 +28,7 @@ jobs:
 
       - name: Fetch eBay listings
         env:
-          EBAY_CLIENT_ID: ${{ secrets.EBAY_CLIENT_ID }}
-          EBAY_CLIENT_SECRET: ${{ secrets.EBAY_CLIENT_SECRET }}
+          APIFY_API_TOKEN: ${{ secrets.APIFY_API_TOKEN }}
         run: python scripts/fetch_listings.py
 
       - name: Commit and push listings.json if changed
