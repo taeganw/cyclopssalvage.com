@@ -35,6 +35,8 @@ def run_actor(api_token: str) -> str:
         },
         timeout=30,
     )
+    if not resp.ok:
+        print(f"Apify error response: {resp.text}")
     resp.raise_for_status()
     return resp.json()["data"]["id"]
 
