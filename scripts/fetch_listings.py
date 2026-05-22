@@ -28,13 +28,11 @@ def run_actor(api_token: str) -> str:
         url,
         params={"token": api_token},
         json={
-            "searchQueries": [f"https://www.ebay.com/sch/i.html?_ssn={EBAY_SELLER}&_ipg=200"],
+            "searchQueries": [f"seller:{EBAY_SELLER}"],
             "maxItems": 500,
         },
         timeout=30,
     )
-    if not resp.ok:
-        print(f"Apify error response: {resp.text}")
     resp.raise_for_status()
     return resp.json()["data"]["id"]
 
