@@ -28,9 +28,7 @@ def run_actor(api_token: str) -> str:
         url,
         params={"token": api_token},
         json={
-            "searchUrls": [
-                {"url": f"https://www.ebay.com/sch/i.html?_ssn={EBAY_SELLER}&_ipg=200"}
-            ],
+            "searchQueries": [f"https://www.ebay.com/sch/i.html?_ssn={EBAY_SELLER}&_ipg=200"],
             "maxItems": 500,
         },
         timeout=30,
