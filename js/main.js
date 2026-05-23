@@ -221,17 +221,18 @@ function buildFilterBar(listings) {
     filterBar.appendChild(btn);
   });
 
-  // Filter logic
-  filterBar.addEventListener('click', e => {
-    const btn = e.target.closest('.filter-btn');
-    if (!btn) return;
-    filterBar.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('filter-btn--active'));
-    btn.classList.add('filter-btn--active');
-    const filter = btn.dataset.filter;
-    document.querySelectorAll('.listing-card').forEach(card => {
-      const show = filter === 'all' || card.dataset.category === filter;
-      card.style.display = show ? '' : 'none';
-    });
+  // filter clicks handled by renderListings
+}
+
+const PAGE_SIZE = 48;
+
+function appendCards(items) {
+  const grid = document.getElementById('listingsGrid');
+  items.forEach(item => {
+    const card = buildListingCard(item);
+    card.classList.add('reveal');
+    grid.appendChild(card);
+    revealObserver.observe(card);
   });
 }
 
@@ -242,10 +243,10 @@ function renderListings(data) {
 
   if (!grid) return;
 
-  const listings = data.listings || [];
+  const allListings = data.listings || [];
 
   if (countEl) {
-    countEl.textContent = `${listings.length} listing${listings.length !== 1 ? 's' : ''}`;
+    countEl.textContent = `${allListings.length} listing${allListings.length !== 1 ? 's' : ''}`;
   }
 
   if (updatedEl && data.updated_at) {
@@ -253,21 +254,61 @@ function renderListings(data) {
     updatedEl.textContent = `Updated ${d.toLocaleString('en-US', { month: 'short', day: 'numeric', hour: 'numeric', minute: '2-digit' })}`;
   }
 
-  buildFilterBar(listings);
+  buildFilterBar(allListings);
 
-  grid.innerHTML = '';
-  if (listings.length === 0) {
-    grid.innerHTML = `<p class="listings-empty">No listings found. Check back soon.</p>`;
-    return;
+  let activeFilter  = 'all';
+  let visibleCount  = PAGE_SIZE;
+
+  function getFiltered() {
+    return activeFilter === 'all'
+      ? allListings
+      : allListings.filter(item => categoryKey(item.category) === activeFilter);
   }
 
-  listings.forEach(item => grid.appendChild(buildListingCard(item)));
+  function renderPage() {
+    grid.innerHTML = '';
+    const filtered = getFiltered();
 
-  // Re-run reveal observer on new cards
-  grid.querySelectorAll('.listing-card').forEach(card => {
-    card.classList.add('reveal');
-    revealObserver.observe(card);
-  });
+    if (filtered.length === 0) {
+      grid.innerHTML = `<p class="listings-empty">No listings found. Check back soon.</p>`;
+      return;
+    }
+
+    appendCards(filtered.slice(0, visibleCount));
+
+    // Load More button
+    if (visibleCount < filtered.length) {
+      const remaining = filtered.length - visibleCount;
+      const btn = document.createElement('button');
+      btn.className   = 'load-more-btn';
+      btn.textContent = `Load More (${remaining} remaining)`;
+      btn.addEventListener('click', () => {
+        visibleCount += PAGE_SIZE;
+        renderPage();
+        btn.scrollIntoView({ behavior: 'smooth', block: 'center' });
+      });
+      const wrap = document.createElement('div');
+      wrap.className = 'load-more-wrap';
+      wrap.appendChild(btn);
+      grid.appendChild(wrap);
+    }
+  }
+
+  // Wire filter bar clicks into our renderer
+  const filterBar = document.getElementById('listingsFilter');
+  if (filterBar) {
+    filterBar.addEventListener('click', e => {
+      const btn = e.target.closest('.filter-btn');
+      if (!btn) return;
+      filterBar.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('filter-btn--active'));
+      btn.classList.add('filter-btn--active');
+      activeFilter = btn.dataset.filter;
+      visibleCount = PAGE_SIZE;
+      renderPage();
+    });
+  }
+
+  renderPage();
 }
 
 function renderListingsError() {
