@@ -472,6 +472,24 @@ ul { list-style: none; }
   .shop__peek { display: none; }
 }
 
+/* tilted cyclops in top-left corner of inventory */
+.shop__corner-cyclops {
+  position: absolute;
+  top: -40px;
+  left: -60px;
+  width: 320px;
+  pointer-events: none;
+  z-index: 0;
+  transform: rotate(-18deg);
+  transform-origin: bottom right;
+}
+.shop__corner-cyclops img {
+  width: 100%;
+  height: auto;
+  opacity: 0.08;
+  filter: contrast(1.2);
+}
+
 /* skeleton art — bleeds off the right edge, ghosted */
 .shop__bg-art {
   position: absolute;
