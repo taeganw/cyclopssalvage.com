@@ -117,36 +117,100 @@ document.querySelectorAll('.category-card').forEach(attachTilt);
 
 const FALLBACK_IMG = 'images/mascot-color.webp';
 
-// Map raw eBay category names → our display labels + filter keys
-const CATEGORY_MAP = {
-  'dixon flannels':     { label: 'Dixon Flannels',   key: 'flannels'    },
-  'bmw':                { label: 'BMW Parts',         key: 'bmw'         },
-  'motors':             { label: 'Motors',            key: 'motors'      },
-  'men':                { label: "Men's",             key: 'mens'        },
-  'women':              { label: "Women's",           key: 'womens'      },
-  'kids':               { label: 'Kids',              key: 'kids'        },
-  'sporting':           { label: 'Sporting Goods',    key: 'sporting'    },
-  'entertainment':      { label: 'Memorabilia',       key: 'memorabilia' },
-  'memorabilia':        { label: 'Memorabilia',       key: 'memorabilia' },
-  'collectibles':       { label: 'Memorabilia',       key: 'memorabilia' },
-};
+// Map raw eBay category fragments → display labels + filter keys
+// Order matters — first match wins, so more specific entries go first
+const CATEGORY_MAP = [
+  // Clothing
+  { fragment: 'dixon',          label: 'Dixon Flannels',  key: 'flannels'  },
+  { fragment: 'flannel',        label: 'Dixon Flannels',  key: 'flannels'  },
+  { fragment: 'button-down',    label: 'Dixon Flannels',  key: 'flannels'  },
+  { fragment: 'shirt',          label: 'Clothing',        key: 'clothing'  },
+  { fragment: 'tops',           label: 'Clothing',        key: 'clothing'  },
+  { fragment: 'men',            label: 'Clothing',        key: 'clothing'  },
+  { fragment: 'women',          label: 'Clothing',        key: 'clothing'  },
+  // BMW Interior
+  { fragment: 'seat belt',      label: 'BMW Interior',    key: 'interior'  },
+  { fragment: 'seat',           label: 'BMW Interior',    key: 'interior'  },
+  { fragment: 'door panel',     label: 'BMW Interior',    key: 'interior'  },
+  { fragment: 'door handle',    label: 'BMW Interior',    key: 'interior'  },
+  { fragment: 'trim',           label: 'BMW Interior',    key: 'interior'  },
+  { fragment: 'console',        label: 'BMW Interior',    key: 'interior'  },
+  { fragment: 'headrest',       label: 'BMW Interior',    key: 'interior'  },
+  { fragment: 'glove box',      label: 'BMW Interior',    key: 'interior'  },
+  { fragment: 'floor mat',      label: 'BMW Interior',    key: 'interior'  },
+  { fragment: 'carpet',         label: 'BMW Interior',    key: 'interior'  },
+  { fragment: 'interior light', label: 'BMW Interior',    key: 'interior'  },
+  { fragment: 'steering wheel', label: 'BMW Interior',    key: 'interior'  },
+  { fragment: 'switch',         label: 'BMW Interior',    key: 'interior'  },
+  { fragment: 'interior',       label: 'BMW Interior',    key: 'interior'  },
+  // BMW Exterior
+  { fragment: 'body molding',   label: 'BMW Exterior',    key: 'exterior'  },
+  { fragment: 'bumper',         label: 'BMW Exterior',    key: 'exterior'  },
+  { fragment: 'convertible top',label: 'BMW Exterior',    key: 'exterior'  },
+  { fragment: 'sunroof',        label: 'BMW Exterior',    key: 'exterior'  },
+  { fragment: 'mirror',         label: 'BMW Exterior',    key: 'exterior'  },
+  { fragment: 'tail light',     label: 'BMW Exterior',    key: 'exterior'  },
+  { fragment: 'auto glass',     label: 'BMW Exterior',    key: 'exterior'  },
+  { fragment: 'window seal',    label: 'BMW Exterior',    key: 'exterior'  },
+  { fragment: 'window motor',   label: 'BMW Exterior',    key: 'exterior'  },
+  { fragment: 'glass',          label: 'BMW Exterior',    key: 'exterior'  },
+  { fragment: 'hatch',          label: 'BMW Exterior',    key: 'exterior'  },
+  { fragment: 'trunk',          label: 'BMW Exterior',    key: 'exterior'  },
+  { fragment: 'lock',           label: 'BMW Exterior',    key: 'exterior'  },
+  { fragment: 'exterior',       label: 'BMW Exterior',    key: 'exterior'  },
+  // BMW Engine & Drivetrain
+  { fragment: 'engine',         label: 'Engine & Drivetrain', key: 'engine' },
+  { fragment: 'crankshaft',     label: 'Engine & Drivetrain', key: 'engine' },
+  { fragment: 'transmission',   label: 'Engine & Drivetrain', key: 'engine' },
+  { fragment: 'differential',   label: 'Engine & Drivetrain', key: 'engine' },
+  { fragment: 'driveshaft',     label: 'Engine & Drivetrain', key: 'engine' },
+  { fragment: 'fuel',           label: 'Engine & Drivetrain', key: 'engine' },
+  { fragment: 'coolant',        label: 'Engine & Drivetrain', key: 'engine' },
+  { fragment: 'air intake',     label: 'Engine & Drivetrain', key: 'engine' },
+  { fragment: 'wiring',         label: 'Engine & Drivetrain', key: 'engine' },
+  { fragment: 'ecu',            label: 'Engine & Drivetrain', key: 'engine' },
+  { fragment: 'pulley',         label: 'Engine & Drivetrain', key: 'engine' },
+  { fragment: 'heat shield',    label: 'Engine & Drivetrain', key: 'engine' },
+  { fragment: 'oil',            label: 'Engine & Drivetrain', key: 'engine' },
+  // BMW Suspension & Brakes
+  { fragment: 'steering',       label: 'Suspension & Brakes', key: 'suspension' },
+  { fragment: 'suspension',     label: 'Suspension & Brakes', key: 'suspension' },
+  { fragment: 'control arm',    label: 'Suspension & Brakes', key: 'suspension' },
+  { fragment: 'spring',         label: 'Suspension & Brakes', key: 'suspension' },
+  { fragment: 'brake',          label: 'Suspension & Brakes', key: 'suspension' },
+  { fragment: 'abs',            label: 'Suspension & Brakes', key: 'suspension' },
+  // BMW HVAC
+  { fragment: 'air conditioning', label: 'HVAC',           key: 'hvac'      },
+  { fragment: 'hvac',           label: 'HVAC',             key: 'hvac'      },
+  { fragment: 'blower',         label: 'HVAC',             key: 'hvac'      },
+  { fragment: 'a/c',            label: 'HVAC',             key: 'hvac'      },
+  // Memorabilia
+  { fragment: 'rock',           label: 'Memorabilia',      key: 'memorabilia' },
+  { fragment: 'pop artist',     label: 'Memorabilia',      key: 'memorabilia' },
+  { fragment: 'memorabilia',    label: 'Memorabilia',      key: 'memorabilia' },
+  { fragment: 'collectible',    label: 'Memorabilia',      key: 'memorabilia' },
+  { fragment: 'entertainment',  label: 'Memorabilia',      key: 'memorabilia' },
+  // Sporting
+  { fragment: 'sporting',       label: 'Sporting Goods',   key: 'sporting'  },
+];
+
+function categoryMatch(raw) {
+  if (!raw) return null;
+  const lower = raw.toLowerCase();
+  return CATEGORY_MAP.find(m => lower.includes(m.fragment)) || null;
+}
 
 function categoryKey(raw) {
-  if (!raw) return 'other';
-  const lower = raw.toLowerCase();
-  for (const [fragment, meta] of Object.entries(CATEGORY_MAP)) {
-    if (lower.includes(fragment)) return meta.key;
-  }
-  return 'other';
+  return categoryMatch(raw)?.key || 'other';
 }
 
 function categoryLabel(raw) {
-  if (!raw) return 'Other';
-  const lower = raw.toLowerCase();
-  for (const [fragment, meta] of Object.entries(CATEGORY_MAP)) {
-    if (lower.includes(fragment)) return meta.label;
-  }
-  return raw;
+  return categoryMatch(raw)?.label || raw || 'Other';
+}
+
+function bigImg(url) {
+  if (!url) return '';
+  return url.replace(/s-l\d+(\.\w+)$/, 's-l500$1');
 }
 
 function formatPrice(value, currency) {
@@ -169,11 +233,11 @@ function buildListingCard(item) {
     <div class="listing-card__texture"></div>
     <div class="listing-card__img-wrap">
       <img
-        src="${item.image || FALLBACK_IMG}"
+        src="${bigImg(item.image) || FALLBACK_IMG}"
         alt="${item.title}"
         class="listing-card__img"
         loading="lazy"
-        onerror="this.src='${FALLBACK_IMG}'"
+        onerror="this.src='${FALLBACK_IMG}';this.onerror=null"
       />
       ${isAuction ? '<span class="listing-card__badge listing-card__badge--auction">Auction</span>' : '<span class="listing-card__badge">Buy Now</span>'}
     </div>
