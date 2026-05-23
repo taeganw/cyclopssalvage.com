@@ -451,6 +451,24 @@ ul { list-style: none; }
 }
 /* ensure shop content sits above background art */
 .shop .container { position: relative; z-index: 1; }
+
+/* cyclops outline watermark behind listings grid */
+.shop__cyclops-bg {
+  position: relative;
+  pointer-events: none;
+  z-index: 0;
+  display: flex;
+  justify-content: center;
+  margin-bottom: -260px;
+}
+.shop__cyclops-bg img {
+  width: min(600px, 80vw);
+  height: auto;
+  opacity: 0.05;
+  filter: grayscale(100%) contrast(1.2);
+  -webkit-mask-image: linear-gradient(to bottom, transparent 0%, black 20%, black 80%, transparent 100%);
+  mask-image: linear-gradient(to bottom, transparent 0%, black 20%, black 80%, transparent 100%);
+}
 .categories {
   display: grid;
   grid-template-columns: repeat(4, 1fr);
