@@ -7,6 +7,9 @@ images/*.jpeg
 # never ignore the live listings data
 !listings.json
 
+# secrets
+.env.secret
+
 # OS
 .DS_Store
 Thumbs.db

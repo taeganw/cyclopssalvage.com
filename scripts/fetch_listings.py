@@ -33,60 +33,66 @@ def get_access_token(client_id: str, client_secret: str) -> str:
     return response.json()["access_token"]
 
 
+def fetch_page(headers: dict, query: str, offset: int) -> dict:
+    params = {
+        "q":           query,
+        "filter":      f"sellers:{{{EBAY_SELLER}}}",
+        "limit":       PAGE_SIZE,
+        "offset":      offset,
+        "fieldgroups": "EXTENDED",
+    }
+    response = requests.get(SEARCH_URL, headers=headers, params=params, timeout=30)
+    response.raise_for_status()
+    return response.json()
+
+
+def normalise(item: dict) -> dict:
+    price_obj  = item.get("price", {})
+    image_obj  = item.get("image", {})
+    categories = item.get("categories", [{}])
+    return {
+        "id":             item.get("itemId", ""),
+        "title":          item.get("title", ""),
+        "price":          price_obj.get("value", "0.00"),
+        "currency":       price_obj.get("currency", "USD"),
+        "condition":      item.get("condition", ""),
+        "image":          image_obj.get("imageUrl", ""),
+        "url":            item.get("itemWebUrl", ""),
+        "category":       categories[0].get("categoryName", "") if categories else "",
+        "category_id":    categories[0].get("categoryId", "")   if categories else "",
+        "buying_options": item.get("buyingOptions", []),
+        "seller":         item.get("seller", {}).get("username", EBAY_SELLER),
+    }
+
+
 def fetch_all_listings(token: str) -> list[dict]:
     headers = {
         "Authorization":           f"Bearer {token}",
         "X-EBAY-C-MARKETPLACE-ID": "EBAY_US",
         "Content-Type":            "application/json",
     }
-    params = {
-        "q":           "",
-        "filter":      f"sellers:{{{EBAY_SELLER}}}",
-        "limit":       PAGE_SIZE,
-        "offset":      0,
-        "fieldgroups": "EXTENDED",
-    }
 
-    all_items = []
+    seen    = {}  # id -> normalised item, deduplicates across queries
+    queries = list("abcdefghijklmnopqrstuvwxyz0123456789")
 
-    while True:
-        response = requests.get(SEARCH_URL, headers=headers, params=params, timeout=30)
-        response.raise_for_status()
-        data = response.json()
+    for query in queries:
+        offset = 0
+        while True:
+            data  = fetch_page(headers, query, offset)
+            items = data.get("itemSummaries", [])
+            if not items:
+                break
+            for item in items:
+                n = normalise(item)
+                seen[n["id"]] = n
+            total      = data.get("total", 0)
+            new_offset = offset + PAGE_SIZE
+            if new_offset >= total:
+                break
+            offset = new_offset
+        print(f"  query '{query}' done — {len(seen)} unique listings so far…")
 
-        items = data.get("itemSummaries", [])
-        if not items:
-            break
-
-        for item in items:
-            price_obj  = item.get("price", {})
-            image_obj  = item.get("image", {})
-            categories = item.get("categories", [{}])
-
-            all_items.append({
-                "id":             item.get("itemId", ""),
-                "title":          item.get("title", ""),
-                "price":          price_obj.get("value", "0.00"),
-                "currency":       price_obj.get("currency", "USD"),
-                "condition":      item.get("condition", ""),
-                "image":          image_obj.get("imageUrl", ""),
-                "url":            item.get("itemWebUrl", ""),
-                "category":       categories[0].get("categoryName", "") if categories else "",
-                "category_id":    categories[0].get("categoryId", "")   if categories else "",
-                "buying_options": item.get("buyingOptions", []),
-                "seller":         item.get("seller", {}).get("username", EBAY_SELLER),
-            })
-
-        total      = data.get("total", 0)
-        new_offset = params["offset"] + PAGE_SIZE
-        print(f"  fetched {min(new_offset, total)}/{total} listings…")
-
-        if new_offset >= total:
-            break
-
-        params["offset"] = new_offset
-
-    return all_items
+    return list(seen.values())
 
 
 def main() -> None:
