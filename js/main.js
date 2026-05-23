@@ -259,29 +259,39 @@ function buildFilterBar(listings) {
   const filterBar = document.getElementById('listingsFilter');
   if (!filterBar) return;
 
-  // Collect unique category keys present in the data
-  const seen = new Set();
-  listings.forEach(item => seen.add(categoryKey(item.category)));
+  // Build a map of key -> { label, count } derived from actual data
+  const groups = {};
+  listings.forEach(item => {
+    const key   = categoryKey(item.category);
+    const label = categoryLabel(item.category);
+    if (!groups[key]) groups[key] = { label, count: 0 };
+    groups[key].count++;
+  });
+
+  filterBar.innerHTML = '';
 
   const allBtn = document.createElement('button');
-  allBtn.className = 'filter-btn filter-btn--active';
-  allBtn.dataset.filter = 'all';
-  allBtn.textContent = 'All';
+  allBtn.className       = 'filter-btn filter-btn--active';
+  allBtn.dataset.filter  = 'all';
+  allBtn.textContent     = 'All';
   filterBar.appendChild(allBtn);
 
-  // Order: flannels first, then BMW, then rest alphabetically
-  const priority = ['flannels', 'bmw', 'motors'];
+  // Priority order for known groups, then sort remainder alphabetically
+  const priority = ['flannels', 'clothing', 'interior', 'exterior', 'engine', 'suspension', 'hvac', 'memorabilia', 'sporting'];
+  const keys     = Object.keys(groups);
   const ordered  = [
-    ...priority.filter(k => seen.has(k)),
-    ...[...seen].filter(k => !priority.includes(k)).sort(),
+    ...priority.filter(k => keys.includes(k)),
+    ...keys.filter(k => !priority.includes(k) && k !== 'other').sort(),
+    ...(keys.includes('other') ? ['other'] : []),
   ];
 
   ordered.forEach(key => {
-    const label = [...Object.values(CATEGORY_MAP)].find(m => m.key === key)?.label || key;
+    const { label, count } = groups[key];
     const btn = document.createElement('button');
-    btn.className    = 'filter-btn';
+    btn.className      = 'filter-btn';
     btn.dataset.filter = key;
-    btn.textContent  = label;
+    btn.textContent    = label;
+    btn.title          = `${count} listing${count !== 1 ? 's' : ''}`;
     filterBar.appendChild(btn);
   });
 
