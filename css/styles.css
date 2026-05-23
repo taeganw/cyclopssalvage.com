@@ -426,8 +426,44 @@ ul { list-style: none; }
   position: relative;
   padding: var(--section-pad);
   background: var(--c-paper);
-  overflow: hidden;
+  overflow: visible;
 }
+/* cyclops heads peeking from left and right edges */
+.shop__peek {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  width: 180px;
+  pointer-events: none;
+  z-index: 2;
+  display: flex;
+  align-items: center;
+}
+.shop__peek--left  { left: -100px; }
+.shop__peek--right { right: -100px; transform: scaleX(-1); }
+.shop__peek__inner {
+  position: sticky;
+  top: 50vh;
+  transform: translateY(-50%);
+}
+.shop__peek img {
+  width: 180px;
+  height: auto;
+  opacity: 0.18;
+  filter: grayscale(20%) contrast(1.1);
+}
+.shop__peek--left img {
+  -webkit-mask-image: linear-gradient(to right, transparent 0%, black 50%);
+  mask-image: linear-gradient(to right, transparent 0%, black 50%);
+}
+.shop__peek--right img {
+  -webkit-mask-image: linear-gradient(to left, transparent 0%, black 50%);
+  mask-image: linear-gradient(to left, transparent 0%, black 50%);
+}
+@media (max-width: 1200px) {
+  .shop__peek { display: none; }
+}
+
 /* skeleton art — bleeds off the right edge, ghosted */
 .shop__bg-art {
   position: absolute;
