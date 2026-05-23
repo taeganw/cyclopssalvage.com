@@ -2,8 +2,8 @@ name: Fetch eBay Listings
 
 on:
   schedule:
-    # runs every 6 hours — keeps well within Apify's free $5/month credit
-    - cron: '0 */6 * * *'
+    # runs every hour — 864 calls/day, well within 5000/day limit
+    - cron: '0 * * * *'
   workflow_dispatch:
     # allows manual trigger from GitHub Actions tab
 
