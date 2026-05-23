@@ -309,10 +309,6 @@ function renderListings(data) {
 
   const allListings = data.listings || [];
 
-  if (countEl) {
-    countEl.textContent = `${allListings.length} listing${allListings.length !== 1 ? 's' : ''}`;
-  }
-
   if (updatedEl && data.updated_at) {
     const d = new Date(data.updated_at);
     updatedEl.textContent = `Updated ${d.toLocaleString('en-US', { month: 'short', day: 'numeric', hour: 'numeric', minute: '2-digit' })}`;
@@ -320,21 +316,31 @@ function renderListings(data) {
 
   buildFilterBar(allListings);
 
-  let activeFilter  = 'all';
-  let visibleCount  = PAGE_SIZE;
+  let activeFilter = 'all';
+  let searchQuery  = '';
+  let visibleCount = PAGE_SIZE;
 
   function getFiltered() {
-    return activeFilter === 'all'
-      ? allListings
-      : allListings.filter(item => categoryKey(item.category) === activeFilter);
+    return allListings.filter(item => {
+      const matchCat    = activeFilter === 'all' || categoryKey(item.category) === activeFilter;
+      const matchSearch = !searchQuery  || item.title.toLowerCase().includes(searchQuery);
+      return matchCat && matchSearch;
+    });
   }
 
   function renderPage() {
     grid.innerHTML = '';
     const filtered = getFiltered();
 
+    if (countEl) {
+      const label = filtered.length === allListings.length
+        ? `${allListings.length} listings`
+        : `${filtered.length} of ${allListings.length} listings`;
+      countEl.textContent = label;
+    }
+
     if (filtered.length === 0) {
-      grid.innerHTML = `<p class="listings-empty">No listings found. Check back soon.</p>`;
+      grid.innerHTML = `<p class="listings-empty">No listings match your search.</p>`;
       return;
     }
 
@@ -367,6 +373,15 @@ function renderListings(data) {
       filterBar.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('filter-btn--active'));
       btn.classList.add('filter-btn--active');
       activeFilter = btn.dataset.filter;
+      visibleCount = PAGE_SIZE;
+      renderPage();
+    });
+  }
+
+  const searchInput = document.getElementById('listingsSearch');
+  if (searchInput) {
+    searchInput.addEventListener('input', () => {
+      searchQuery  = searchInput.value.trim().toLowerCase();
       visibleCount = PAGE_SIZE;
       renderPage();
     });
