@@ -432,25 +432,69 @@ ul { list-style: none; }
   background: var(--c-paper);
   overflow: visible;
 }
-/* GPK baby — large static art anchored to bottom-right, behind listings */
+/* left cyclops peek */
+.shop__peek {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  width: 260px;
+  pointer-events: none;
+  z-index: 2;
+}
+.shop__peek--left { left: -120px; }
+.shop__peek__inner {
+  position: sticky;
+  top: 50vh;
+  transform: translateY(-50%);
+  animation: peekFloat 5s ease-in-out infinite;
+}
+.shop__peek img {
+  width: 320px;
+  height: auto;
+  opacity: 0.35;
+  filter: contrast(1.15);
+}
+.shop__peek--left img {
+  -webkit-mask-image: linear-gradient(to right, transparent 0%, black 55%);
+  mask-image: linear-gradient(to right, transparent 0%, black 55%);
+}
+@keyframes peekFloat {
+  0%, 100% { transform: translateY(-50%) translateY(0px);   }
+  50%       { transform: translateY(-50%) translateY(-16px); }
+}
+@media (max-width: 1100px) {
+  .shop__peek { display: none; }
+}
+
+/* GPK baby — sticky on right, scrolls with user, visible */
 .shop__gpk {
   position: absolute;
+  top: 0;
   bottom: 0;
-  right: 0;
-  width: 680px;
+  right: -80px;
+  width: 420px;
   pointer-events: none;
-  z-index: 0;
+  z-index: 2;
+}
+.shop__gpk__inner {
+  position: sticky;
+  top: 50vh;
+  transform: translateY(-50%);
+  animation: peekFloat 6s ease-in-out infinite;
+  animation-delay: -3s;
 }
 .shop__gpk-img {
-  width: 100%;
+  width: 420px;
   height: auto;
-  display: block;
-  opacity: 0.13;
-  filter: drop-shadow(0 0 60px rgba(0,0,0,0.3));
-  transform: scaleX(-1);
-  -webkit-mask-image: linear-gradient(to top, black 40%, transparent 100%);
-  mask-image: linear-gradient(to top, black 40%, transparent 100%);
+  opacity: 0.55;
+  filter: drop-shadow(-8px 8px 30px rgba(0,0,0,0.5));
+  -webkit-mask-image: linear-gradient(to left, transparent 0%, black 50%);
+  mask-image: linear-gradient(to left, transparent 0%, black 50%);
 }
+@media (max-width: 1200px) {
+  .shop__gpk { display: none; }
+}
+
 /* ensure shop content sits above background art */
 .shop .container { position: relative; z-index: 1; }
 
