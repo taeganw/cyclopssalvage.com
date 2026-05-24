@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Page Not Found — Cyclops Salvage</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@400;700;900&family=Barlow:wght@400;500;600&display=swap" />
+  <link rel="stylesheet" href="css/styles.css" />
+  <link rel="icon" type="image/x-icon" href="favicon.ico" />
+  <style>
+    .notfound {
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+      padding: 2rem;
+      background: var(--c-black, #0a0a0a);
+      color: var(--c-off-white, #f0ece4);
+    }
+    .notfound__mascot {
+      width: 120px;
+      margin-bottom: 1.5rem;
+      opacity: 0.7;
+    }
+    .notfound__code {
+      font-family: 'Barlow Condensed', sans-serif;
+      font-size: clamp(5rem, 20vw, 9rem);
+      font-weight: 900;
+      line-height: 1;
+      color: var(--c-accent, #e63232);
+      margin: 0;
+    }
+    .notfound__heading {
+      font-family: 'Barlow Condensed', sans-serif;
+      font-size: clamp(1.5rem, 5vw, 2.5rem);
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      margin: 0.5rem 0 1rem;
+    }
+    .notfound__sub {
+      font-size: 1rem;
+      opacity: 0.6;
+      max-width: 380px;
+      margin-bottom: 2rem;
+    }
+    .notfound__actions {
+      display: flex;
+      gap: 1rem;
+      flex-wrap: wrap;
+      justify-content: center;
+    }
+  </style>
+</head>
+<body>
+  <div class="notfound">
+    <img src="images/mascot-outline.webp" alt="Cyclops Salvage" class="notfound__mascot" />
+    <p class="notfound__code">404</p>
+    <h1 class="notfound__heading">This one got away</h1>
+    <p class="notfound__sub">The page you're looking for doesn't exist or was moved. Head back and keep hunting.</p>
+    <div class="notfound__actions">
+      <a href="/" class="btn btn--primary">Back to Home</a>
+      <a href="https://www.ebay.com/str/cyclopssalvage" target="_blank" rel="noopener" class="btn btn--ghost">Shop on eBay</a>
+    </div>
+  </div>
+</body>
+</html>
