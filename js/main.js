@@ -507,20 +507,22 @@ function renderListings(data) {
 
     appendCards(filtered.slice(0, visibleCount));
 
-    // Load More button
+    // Load More — explosion card
     if (visibleCount < filtered.length) {
       const remaining = filtered.length - visibleCount;
-      const btn = document.createElement('button');
-      btn.className   = 'load-more-btn';
-      btn.textContent = `Load More (${remaining} remaining)`;
-      btn.addEventListener('click', () => {
+      const wrap = document.createElement('div');
+      wrap.className = 'load-more-explosion';
+      wrap.innerHTML = `
+        <img src="images/art-gpk-color.webp" alt="" class="load-more-explosion__art" />
+        <button class="load-more-explosion__btn">
+          LOAD MORE
+          <span class="load-more-explosion__count">${remaining} remaining</span>
+        </button>
+      `;
+      wrap.querySelector('.load-more-explosion__btn').addEventListener('click', () => {
         visibleCount += PAGE_SIZE;
         renderPage();
-        btn.scrollIntoView({ behavior: 'smooth', block: 'center' });
       });
-      const wrap = document.createElement('div');
-      wrap.className = 'load-more-wrap';
-      wrap.appendChild(btn);
       grid.appendChild(wrap);
     }
   }
