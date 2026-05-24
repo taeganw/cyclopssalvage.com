@@ -1337,6 +1337,22 @@ ul { list-style: none; }
     display: none;
   }
 
+  /* 4. Explosion card mobile adjustments */
+  .load-more-explosion__art {
+    width: 200%;
+    bottom: -30px;
+  }
+  .load-more-explosion__btn-wrap {
+    bottom: 0.75rem;
+  }
+  .load-more-explosion__btn {
+    font-size: 0.75rem;
+    padding: 0.4em 0.9em;
+  }
+  .load-more-explosion__count {
+    font-size: 0.55rem;
+  }
+
   /* 3. Filter bar: single horizontal scrollable strip */
   .filter-bar {
     width: 100%;
