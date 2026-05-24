@@ -302,20 +302,24 @@ ul { list-style: none; }
     padding: 0.5rem 0;
   }
   .nav__links.open { display: flex; }
-  .nav__link, .nav__cta {
+  .nav__link {
     width: 100%;
     padding: 1rem 1.5rem;
     border-bottom: none;
     border-top: 1px solid rgba(255,255,255,0.07);
     font-size: 1.15rem;
     box-sizing: border-box;
+    background: transparent;
   }
   .nav__cta {
     margin-top: 0;
     background: var(--c-red);
     padding: 1rem 1.5rem;
-    text-align: center;
     border-top: 1px solid rgba(255,255,255,0.07);
+    font-size: 1.15rem;
+    text-align: right;
+    box-sizing: border-box;
+    box-shadow: none;
   }
 
   /* Hero needs bottom padding instead of top to clear the nav */
