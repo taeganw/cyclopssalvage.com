@@ -254,8 +254,6 @@ ul { list-style: none; }
   box-shadow: 1px 1px 0 var(--c-red-dark);
 }
 
-/* hide icons on desktop */
-.nav__link-icon { display: none; }
 
 /* mobile toggle */
 .nav__toggle {
@@ -321,10 +319,6 @@ ul { list-style: none; }
     box-sizing: border-box;
     background: transparent;
     color: var(--c-off-white);
-    display: flex;
-    align-items: center;
-    justify-content: flex-end;
-    gap: 0.6rem;
   }
   .nav__link:hover { background: rgba(255,255,255,0.05); color: var(--c-gold); }
   .nav__cta {
@@ -337,17 +331,8 @@ ul { list-style: none; }
     box-sizing: border-box;
     box-shadow: none;
     color: var(--c-white);
-    display: flex;
-    align-items: center;
-    justify-content: flex-end;
-    gap: 0.6rem;
   }
   .nav__cta:hover { background: var(--c-red-dark); transform: none; }
-  .nav__link-icon {
-    display: inline;
-    font-size: 1rem;
-    line-height: 1;
-  }
 
   /* Hero needs bottom padding instead of top to clear the nav */
   .hero {
