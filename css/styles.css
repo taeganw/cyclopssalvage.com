@@ -1207,12 +1207,16 @@ ul { list-style: none; }
   pointer-events: none;
   z-index: 1;
 }
-.load-more-explosion__btn {
+.load-more-explosion__btn-wrap {
   position: absolute;
   bottom: 1.5rem;
-  left: 50%;
-  transform: translateX(-50%);
+  left: 0;
+  right: 0;
+  display: flex;
+  justify-content: center;
   z-index: 2;
+}
+.load-more-explosion__btn {
   display: flex;
   flex-direction: column;
   align-items: center;

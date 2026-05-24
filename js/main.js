@@ -514,10 +514,12 @@ function renderListings(data) {
       wrap.className = 'load-more-explosion';
       wrap.innerHTML = `
         <img src="images/art-gpk-color.webp" alt="" class="load-more-explosion__art" />
-        <button class="load-more-explosion__btn">
-          LOAD MORE
-          <span class="load-more-explosion__count">${remaining} remaining</span>
-        </button>
+        <div class="load-more-explosion__btn-wrap">
+          <button class="load-more-explosion__btn">
+            LOAD MORE
+            <span class="load-more-explosion__count">${remaining} remaining</span>
+          </button>
+        </div>
       `;
       wrap.querySelector('.load-more-explosion__btn').addEventListener('click', () => {
         visibleCount += PAGE_SIZE;
