@@ -309,7 +309,12 @@ ul { list-style: none; }
     box-shadow: -4px -4px 24px rgba(0,0,0,0.5);
   }
   .nav__links.open { display: flex; }
+  .nav__links li {
+    display: block;
+    width: 100%;
+  }
   .nav__link {
+    display: block;
     width: 100%;
     padding: 0.9rem 1.25rem;
     border-bottom: none;
@@ -322,6 +327,8 @@ ul { list-style: none; }
   }
   .nav__link:hover { background: rgba(255,255,255,0.05); color: var(--c-gold); }
   .nav__cta {
+    display: block;
+    width: 100%;
     margin-top: 0;
     background: var(--c-red);
     padding: 0.9rem 1.25rem;
