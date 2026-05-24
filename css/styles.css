@@ -441,7 +441,8 @@ ul { list-style: none; }
   pointer-events: none;
   z-index: 2;
 }
-.shop__peek--left { left: -120px; }
+.shop__peek--left  { left: -120px; }
+.shop__peek--right { right: -120px; }
 .shop__peek__inner {
   position: sticky;
   top: 50vh;
@@ -457,6 +458,14 @@ ul { list-style: none; }
 .shop__peek--left img {
   -webkit-mask-image: linear-gradient(to right, transparent 0%, black 55%);
   mask-image: linear-gradient(to right, transparent 0%, black 55%);
+}
+.shop__peek--right img {
+  transform: scaleX(-1);
+  -webkit-mask-image: linear-gradient(to left, transparent 0%, black 55%);
+  mask-image: linear-gradient(to left, transparent 0%, black 55%);
+}
+.shop__peek--right .shop__peek__inner {
+  animation-delay: -2.5s;
 }
 @keyframes peekFloat {
   0%, 100% { transform: translateY(-50%) translateY(0px);   }
