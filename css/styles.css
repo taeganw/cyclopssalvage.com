@@ -291,8 +291,9 @@ ul { list-style: none; }
     position: absolute;
     bottom: 64px;
     top: auto;
-    left: 0;
+    left: auto;
     right: 0;
+    width: 220px;
     background: var(--c-black);
     border-top: 2px solid var(--c-red);
     border-bottom: none;
@@ -308,6 +309,7 @@ ul { list-style: none; }
     border-bottom: none;
     border-top: 1px solid rgba(255,255,255,0.07);
     font-size: 1.15rem;
+    text-align: right;
     box-sizing: border-box;
     background: transparent;
   }
