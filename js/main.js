@@ -463,7 +463,8 @@ function renderListings(data) {
 
   if (updatedEl && data.updated_at) {
     const d = new Date(data.updated_at);
-    updatedEl.textContent = `Updated ${d.toLocaleString('en-US', { month: 'short', day: 'numeric', hour: 'numeric', minute: '2-digit' })}`;
+    const tz = Intl.DateTimeFormat().resolvedOptions().timeZone || 'America/Los_Angeles';
+    updatedEl.textContent = `Updated ${d.toLocaleString('en-US', { month: 'short', day: 'numeric', hour: 'numeric', minute: '2-digit', timeZone: tz, timeZoneName: 'short' })}`;
   }
 
   // Only pass BMW listings to the filter bar so counts are accurate
