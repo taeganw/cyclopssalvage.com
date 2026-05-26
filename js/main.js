@@ -103,7 +103,7 @@ function attachTilt(card) {
     const rect = card.getBoundingClientRect();
     const x = (e.clientX - rect.left) / rect.width  - 0.5;
     const y = (e.clientY - rect.top)  / rect.height - 0.5;
-    card.style.transform = `translate(-2px,-2px) rotateY(${x * 6}deg) rotateX(${-y * 6}deg)`;
+    card.style.transform = `translate(-2px,-2px) rotateY(${x * 2}deg) rotateX(${-y * 2}deg)`;
   });
   card.addEventListener('mouseleave', () => {
     card.style.transform = '';
@@ -314,33 +314,25 @@ const CATEGORY_EXACT = {
   'Owner & Operator Manuals':             { label: 'Other Auto',            key: 'autoother'   },
   'Pulleys':                              { label: 'Engine & Drivetrain',   key: 'engine'      },
   'Tensioners & Pulleys':                 { label: 'Engine & Drivetrain',   key: 'engine'      },
-  // Collectibles / Merchandise
-  'Decks':                                { label: 'Collectibles',          key: 'collectibles'},
-  'Other Rock & Pop Artists F':           { label: 'Collectibles',          key: 'collectibles'},
-  'T-Shirts':                             { label: 'Clothing',              key: 'clothing'    },
-  'Trading Card Singles':                 { label: 'Collectibles',          key: 'collectibles'},
 };
 
 // Fallback fragment matching for any categories not in the exact map
 const CATEGORY_FALLBACK = [
-  { fragment: 'dixon',        label: 'Dixon Flannels',  key: 'flannels'    },
-  { fragment: 'flannel',      label: 'Dixon Flannels',  key: 'flannels'    },
-  { fragment: 'button-down',  label: 'Dixon Flannels',  key: 'flannels'    },
-  { fragment: 'shirt',        label: 'Clothing',        key: 'clothing'    },
-  { fragment: 'men',          label: 'Clothing',        key: 'clothing'    },
-  { fragment: 'women',        label: 'Clothing',        key: 'clothing'    },
-  { fragment: 'rock',         label: 'Collectibles',    key: 'collectibles'},
-  { fragment: 'memorabilia',  label: 'Collectibles',    key: 'collectibles'},
-  { fragment: 'collectible',  label: 'Collectibles',    key: 'collectibles'},
-  { fragment: 'sporting',     label: 'Sporting Goods',  key: 'sporting'    },
-  { fragment: 'interior',     label: 'BMW Interior',    key: 'interior'    },
-  { fragment: 'exterior',     label: 'BMW Exterior',    key: 'exterior'    },
-  { fragment: 'engine',       label: 'Engine & Drivetrain', key: 'engine'  },
-  { fragment: 'brake',        label: 'Suspension & Brakes', key: 'suspension' },
-  { fragment: 'suspension',   label: 'Suspension & Brakes', key: 'suspension' },
-  { fragment: 'hvac',         label: 'HVAC',            key: 'hvac'        },
-  { fragment: 'electrical',   label: 'Electrical',      key: 'electrical'  },
+  { fragment: 'interior',     label: 'BMW Interior',        key: 'interior'    },
+  { fragment: 'exterior',     label: 'BMW Exterior',        key: 'exterior'    },
+  { fragment: 'engine',       label: 'Engine & Drivetrain', key: 'engine'      },
+  { fragment: 'brake',        label: 'Suspension & Brakes', key: 'suspension'  },
+  { fragment: 'suspension',   label: 'Suspension & Brakes', key: 'suspension'  },
+  { fragment: 'hvac',         label: 'HVAC',                key: 'hvac'        },
+  { fragment: 'electrical',   label: 'Electrical',          key: 'electrical'  },
 ];
+
+// BMW title keyword detection — used to filter listings to BMW-only
+const BMW_TITLE_PATTERNS = /\bbmw\b|(?:^|\s|-)(?:e21|e28|e30|e34|e36|e38|e39|e46|e53|e60|e61|e63|e64|e65|e66|e82|e83|e84|e87|e90|e91|e92|e93|f01|f02|f06|f07|f10|f11|f12|f13|f15|f16|f20|f21|f22|f23|f25|f26|f30|f31|f32|f33|f34|f36|f80|f82|f83|g20|g30|g42|x1|x2|x3|x4|x5|x6|x7)(?:\s|$|-)/i;
+
+function isBmw(item) {
+  return BMW_TITLE_PATTERNS.test(item.title);
+}
 
 function categoryMatch(raw) {
   if (!raw) return null;
@@ -422,18 +414,17 @@ function buildFilterBar(listings) {
   filterBar.innerHTML = '';
 
   const allBtn = document.createElement('button');
-  allBtn.className       = 'filter-btn filter-btn--active';
-  allBtn.dataset.filter  = 'all';
-  allBtn.textContent     = 'All';
+  allBtn.className       = 'filter-btn';
+  allBtn.dataset.filter  = 'bmw';
+  allBtn.textContent     = 'All BMW Parts';
   filterBar.appendChild(allBtn);
 
-  // Priority order for known groups, then sort remainder alphabetically
-  const priority = ['flannels', 'clothing', 'collectibles', 'interior', 'exterior', 'engine', 'suspension', 'hvac', 'electrical', 'wheels', 'exhaust', 'sporting', 'autoother'];
-  const keys     = Object.keys(groups);
+  // Priority order for BMW part categories only
+  const priority = ['interior', 'exterior', 'engine', 'suspension', 'hvac', 'electrical', 'wheels', 'exhaust', 'autoother'];
+  const BMW_KEYS = new Set(priority);
+  const keys     = Object.keys(groups).filter(k => BMW_KEYS.has(k));
   const ordered  = [
     ...priority.filter(k => keys.includes(k)),
-    ...keys.filter(k => !priority.includes(k) && k !== 'other').sort(),
-    ...(keys.includes('other') ? ['other'] : []),
   ];
 
   ordered.forEach(key => {
@@ -475,15 +466,18 @@ function renderListings(data) {
     updatedEl.textContent = `Updated ${d.toLocaleString('en-US', { month: 'short', day: 'numeric', hour: 'numeric', minute: '2-digit' })}`;
   }
 
-  buildFilterBar(allListings);
+  // Only pass BMW listings to the filter bar so counts are accurate
+  const bmwListings = allListings.filter(isBmw);
+  buildFilterBar(bmwListings);
 
-  let activeFilter = 'all';
+  let activeFilter = 'bmw';
   let searchQuery  = '';
   let visibleCount = PAGE_SIZE;
 
   function getFiltered() {
     return allListings.filter(item => {
-      const matchCat    = activeFilter === 'all' || categoryKey(item.category) === activeFilter;
+      if (!isBmw(item)) return false;
+      const matchCat    = activeFilter === 'bmw' || categoryKey(item.category) === activeFilter;
       const matchSearch = !searchQuery  || item.title.toLowerCase().includes(searchQuery);
       return matchCat && matchSearch;
     });
@@ -494,9 +488,9 @@ function renderListings(data) {
     const filtered = getFiltered();
 
     if (countEl) {
-      const label = filtered.length === allListings.length
-        ? `${allListings.length} listings`
-        : `${filtered.length} of ${allListings.length} listings`;
+      const label = filtered.length === bmwListings.length
+        ? `${bmwListings.length} listings`
+        : `${filtered.length} of ${bmwListings.length} listings`;
       countEl.textContent = label;
     }
 
@@ -507,21 +501,18 @@ function renderListings(data) {
 
     appendCards(filtered.slice(0, visibleCount));
 
-    // Load More — explosion card
+    // Load More
     if (visibleCount < filtered.length) {
       const remaining = filtered.length - visibleCount;
       const wrap = document.createElement('div');
-      wrap.className = 'load-more-explosion';
+      wrap.className = 'load-more-wrap';
       wrap.innerHTML = `
-        <img src="images/art-gpk-color.webp" alt="" class="load-more-explosion__art" />
-        <div class="load-more-explosion__btn-wrap">
-          <button class="load-more-explosion__btn">
-            LOAD MORE
-            <span class="load-more-explosion__count">${remaining} remaining</span>
-          </button>
-        </div>
+        <button class="load-more-btn">
+          Load More
+          <span class="load-more-btn__count">${remaining} remaining</span>
+        </button>
       `;
-      wrap.querySelector('.load-more-explosion__btn').addEventListener('click', () => {
+      wrap.querySelector('.load-more-btn').addEventListener('click', () => {
         visibleCount += PAGE_SIZE;
         renderPage();
       });
@@ -532,6 +523,10 @@ function renderListings(data) {
   // Wire filter bar clicks into our renderer
   const filterBar = document.getElementById('listingsFilter');
   if (filterBar) {
+    // Set initial active state on the "All BMW Parts" button
+    const initialBtn = filterBar.querySelector('[data-filter="bmw"]');
+    if (initialBtn) initialBtn.classList.add('filter-btn--active');
+
     filterBar.addEventListener('click', e => {
       const btn = e.target.closest('.filter-btn');
       if (!btn) return;

@@ -1,6 +1,6 @@
 /* ============================================================
    CYCLOPS SALVAGE — styles.css
-   Grunge / punk storefront aesthetic
+   BMW specialist shop aesthetic
    ============================================================ */
 
 /* ── Google Fonts loaded in <head> ──────────────────────────
@@ -14,8 +14,8 @@
   --c-black:        #111111;
   --c-dark:         #1C1C1E;
   --c-mid:          #2A2A2C;
-  --c-paper:        #F0EBE0;
-  --c-paper-dark:   #E0D9CB;
+  --c-paper:        #F5F5F5;
+  --c-paper-dark:   #E8E8E8;
   --c-white:        #FFFFFF;
   --c-off-white:    #E8E4DC;
   --c-red:          #C8302A;
@@ -37,8 +37,8 @@
   --section-pad:    6rem 1.5rem;
   --radius:         2px;
 
-  /* grunge noise overlay — inline SVG data URI */
-  --texture-noise: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='300' height='300'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='300' height='300' filter='url(%23n)' opacity='0.08'/%3E%3C/svg%3E");
+  /* subtle noise overlay */
+  --texture-noise: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='300' height='300'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='300' height='300' filter='url(%23n)' opacity='0.04'/%3E%3C/svg%3E");
 }
 
 /* ── Reset ────────────────────────────────────────────────── */
@@ -75,7 +75,7 @@ ul { list-style: none; }
   pointer-events: none;
   z-index: 1;
 }
-.section-texture--dark { opacity: 0.15; }
+.section-texture--dark { opacity: 0.08; }
 
 /* stamp labels */
 .stamp-label {
@@ -371,7 +371,7 @@ ul { list-style: none; }
   z-index: 0;
 }
 
-/* diagonal scratch lines */
+/* subtle diagonal lines */
 .hero::before {
   content: '';
   position: absolute;
@@ -380,8 +380,8 @@ ul { list-style: none; }
     -55deg,
     transparent,
     transparent 4px,
-    rgba(255,255,255,0.018) 4px,
-    rgba(255,255,255,0.018) 5px
+    rgba(255,255,255,0.006) 4px,
+    rgba(255,255,255,0.006) 5px
   );
   z-index: 0;
 }
@@ -665,8 +665,8 @@ ul { list-style: none; }
     45deg,
     transparent,
     transparent 3px,
-    rgba(255,255,255,0.012) 3px,
-    rgba(255,255,255,0.012) 4px
+    rgba(255,255,255,0.004) 3px,
+    rgba(255,255,255,0.004) 4px
   );
   pointer-events: none;
 }
@@ -748,6 +748,10 @@ ul { list-style: none; }
   font-size: 1.8rem;
   color: var(--c-red);
   margin-left: 1px;
+}
+.about__stat-num--text {
+  font-size: 2rem;
+  letter-spacing: 0.06em;
 }
 .about__stat-label {
   font-family: var(--font-mono);
@@ -1231,74 +1235,43 @@ ul { list-style: none; }
   letter-spacing: 0.15em;
 }
 
-/* ── Load More — explosion card ──────────────────────────── */
-.load-more-explosion {
-  /* single grid cell — no grid-column span */
-  position: relative;
-  background: var(--c-dark);
-  border: 1px solid rgba(255,255,255,0.06);
-  border-radius: var(--radius);
-  box-shadow: 3px 3px 0 var(--c-black);
-  /* same aspect ratio as listing cards */
-  aspect-ratio: 1 / 1;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  /* allow baby to burst upward out of card */
-  overflow: visible;
-}
-.load-more-explosion__art {
-  position: absolute;
-  bottom: -60px;
-  left: 50%;
-  transform: translateX(-50%);
-  width: 156%;
-  height: auto;
-  opacity: 1;
-  filter: drop-shadow(0 -8px 24px rgba(200,48,42,0.5)) drop-shadow(0 4px 12px rgba(0,0,0,0.6));
-  pointer-events: none;
-  z-index: 1;
-}
-.load-more-explosion__btn-wrap {
-  position: absolute;
-  bottom: 1.5rem;
-  left: 0;
-  right: 0;
+/* ── Load More ───────────────────────────────────────────── */
+.load-more-wrap {
+  grid-column: 1 / -1;
   display: flex;
   justify-content: center;
-  z-index: 2;
+  padding: 2rem 0 1rem;
 }
-.load-more-explosion__btn {
+.load-more-btn {
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 0.25rem;
+  gap: 0.2rem;
   font-family: var(--font-head);
-  font-weight: 900;
-  font-size: 1.32rem;
+  font-weight: 700;
+  font-size: 1rem;
   letter-spacing: 0.12em;
   text-transform: uppercase;
   color: var(--c-white);
   background: var(--c-red);
   border: none;
-  padding: 0.55em 1.68em;
+  padding: 0.7em 2.2em;
   border-radius: var(--radius);
   cursor: pointer;
-  white-space: nowrap;
-  box-shadow: 3px 3px 0 var(--c-red-dark), 0 0 24px rgba(200,48,42,0.6);
+  box-shadow: 3px 3px 0 var(--c-red-dark);
   transition: transform 0.15s, box-shadow 0.15s, background 0.15s;
 }
-.load-more-explosion__btn:hover {
+.load-more-btn:hover {
   background: var(--c-red-dark);
-  transform: translate(-2px, -2px) scale(1.05);
-  box-shadow: 5px 5px 0 var(--c-red-dark), 0 0 40px rgba(200,48,42,0.8);
+  transform: translate(1px, 1px);
+  box-shadow: 2px 2px 0 var(--c-red-dark);
 }
-.load-more-explosion__count {
-  font-size: 0.72rem;
+.load-more-btn__count {
+  font-size: 0.65rem;
   font-weight: 400;
   font-family: var(--font-mono);
   letter-spacing: 0.15em;
-  opacity: 0.8;
+  opacity: 0.75;
   text-transform: uppercase;
 }
 
@@ -1378,22 +1351,6 @@ ul { list-style: none; }
   }
   .listings-ebay-btn {
     display: none;
-  }
-
-  /* 4. Explosion card mobile adjustments */
-  .load-more-explosion__art {
-    width: 200%;
-    bottom: -30px;
-  }
-  .load-more-explosion__btn-wrap {
-    bottom: 0.75rem;
-  }
-  .load-more-explosion__btn {
-    font-size: 0.75rem;
-    padding: 0.4em 0.9em;
-  }
-  .load-more-explosion__count {
-    font-size: 0.55rem;
   }
 
   /* 3. Filter bar: wraps into multiple rows on mobile */
